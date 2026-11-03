@@ -9,23 +9,29 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
+      - uses: android-actions/setup-android@v3
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+      - name: install android build tools
+        run: |
+          sdkmanager --licenses > /dev/null 2>&1 || true
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
       - name: install bubblewrap
         run: npm i -g @bubblewrap/cli
+      - name: point bubblewrap to java and android sdk
+        run: |
+          mkdir -p ~/.bubblewrap
+          echo "{\"jdkPath\":\"$JAVA_HOME\",\"androidSdkPath\":\"$ANDROID_HOME\"}" > ~/.bubblewrap/config.json
       - name: create keystore
         env:
           KS_PASS: ${{ secrets.KS_PASS }}
         run: keytool -genkeypair -keystore android.keystore -storepass "$KS_PASS" -keypass "$KS_PASS" -alias android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Zik Chat"
-      - name: init project
-        run: |
-          yes | bubblewrap init --manifest https://zik-chat.a23681982.workers.dev/manifest.webmanifest || true
       - name: build apk
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KS_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KS_PASS }}
-        run: yes | bubblewrap build --skipPwaValidation
+        run: bubblewrap build --skipPwaValidation
       - uses: actions/upload-artifact@v4
         with:
           name: zik-chat-apk
