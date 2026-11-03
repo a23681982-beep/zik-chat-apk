@@ -27,7 +27,7 @@ jobs:
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KS_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KS_PASS }}
-        run: bubblewrap build --skipPwaValidation < /dev/null
+        run: printf 'n\nn\n' | bubblewrap build --skipPwaValidation
       - uses: actions/upload-artifact@v4
         with:
           name: zik-chat-apk
