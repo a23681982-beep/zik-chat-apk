@@ -1,0 +1,18 @@
+{
+  "packageId": "com.zikchat.app",
+  "host": "zik-chat.a23681982.workers.dev",
+  "name": "Zik Chat",
+  "launcherName": "Zik Chat",
+  "display": "standalone",
+  "themeColor": "#0d1117",
+  "navigationColor": "#0d1117",
+  "backgroundColor": "#0d1117",
+  "startUrl": "/",
+  "iconUrl": "https://zik-chat.a23681982.workers.dev/icon-512.png",
+  "maskableIconUrl": "https://zik-chat.a23681982.workers.dev/icon-512.png",
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "signingKey": { "path": "./android.keystore", "alias": "android" },
+  "fallbackType": "customtabs",
+  "webManifestUrl": "https://zik-chat.a23681982.workers.dev/manifest.webmanifest"
+}
