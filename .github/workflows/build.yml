@@ -10,24 +10,15 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: android sdk packages
-        run: |
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
       - name: install bubblewrap
         run: npm i -g @bubblewrap/cli
       - name: keystore
         env:
           KS_PASS: ${{ secrets.KS_PASS }}
         run: keytool -genkeypair -keystore android.keystore -storepass "$KS_PASS" -keypass "$KS_PASS" -alias android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Zik Chat"
-      - name: bubblewrap config
-        run: |
-          mkdir -p ~/.bubblewrap
-          printf '{"jdkPath":"%s","androidSdkPath":"%s"}' "$JAVA_HOME" "$ANDROID_HOME" > ~/.bubblewrap/config.json
       - name: build apk
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KS_PASS }}
