@@ -22,12 +22,13 @@ jobs:
       - name: bubblewrap config
         run: |
           mkdir -p ~/.bubblewrap
-          printf '{"jdkPath":"%s"}' "$JAVA_HOME" > ~/.bubblewrap/config.json
+          printf '{"jdkPath":"%s","androidSdkPath":"%s"}' "$JAVA_HOME" "$ANDROID_HOME" > ~/.bubblewrap/config.json
+          cat ~/.bubblewrap/config.json
       - name: build apk
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KS_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KS_PASS }}
-        run: printf 'n\nn\n' | bubblewrap build --skipPwaValidation
+        run: printf 'n\n%s\n' "$ANDROID_HOME" | bubblewrap build --skipPwaValidation
       - uses: actions/upload-artifact@v4
         with:
           name: zik-chat-apk
