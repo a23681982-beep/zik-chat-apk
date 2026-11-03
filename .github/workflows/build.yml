@@ -15,6 +15,11 @@ jobs:
           node-version: '20'
       - name: install bubblewrap
         run: npm i -g @bubblewrap/cli
+      - name: android sdk components
+        run: |
+          SM=$(command -v sdkmanager || find "$ANDROID_HOME" -name sdkmanager -path "*bin*" | head -1)
+          yes | "$SM" --licenses > /dev/null
+          "$SM" "platforms;android-34" "build-tools;34.0.0" "platform-tools"
       - name: keystore
         env:
           KS_PASS: ${{ secrets.KS_PASS }}
@@ -23,12 +28,11 @@ jobs:
         run: |
           mkdir -p ~/.bubblewrap
           printf '{"jdkPath":"%s","androidSdkPath":"%s"}' "$JAVA_HOME" "$ANDROID_HOME" > ~/.bubblewrap/config.json
-          cat ~/.bubblewrap/config.json
       - name: build apk
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KS_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KS_PASS }}
-        run: printf 'n\n%s\n' "$ANDROID_HOME" | bubblewrap build --skipPwaValidation
+        run: bubblewrap build --skipPwaValidation < /dev/null
       - uses: actions/upload-artifact@v4
         with:
           name: zik-chat-apk
