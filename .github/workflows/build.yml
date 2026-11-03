@@ -19,11 +19,16 @@ jobs:
         env:
           KS_PASS: ${{ secrets.KS_PASS }}
         run: keytool -genkeypair -keystore android.keystore -storepass "$KS_PASS" -keypass "$KS_PASS" -alias android -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=Zik Chat"
+      - name: bubblewrap config (use the JDK we installed)
+        run: |
+          mkdir -p ~/.bubblewrap
+          printf '{"jdkPath":"%s"}' "$JAVA_HOME" > ~/.bubblewrap/config.json
+          cat ~/.bubblewrap/config.json
       - name: build apk
         env:
           BUBBLEWRAP_KEYSTORE_PASSWORD: ${{ secrets.KS_PASS }}
           BUBBLEWRAP_KEY_PASSWORD: ${{ secrets.KS_PASS }}
-        run: bubblewrap build --skipPwaValidation
+        run: yes n | bubblewrap build --skipPwaValidation
       - uses: actions/upload-artifact@v4
         with:
           name: zik-chat-apk
